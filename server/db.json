@@ -17,6 +17,12 @@
       "password": "$2a$10$CtHS.yCGS80jiuZx8yKEI.5zdiZykHF/6aPTDqpHl6ZqEFGISOHKO",
       "name": "Saad Hasan",
       "id": 3
+    },
+    {
+      "email": "simul@gmail.com",
+      "password": "$2a$10$p8nKzxM3nwHSw0na98pAGOAbWyDv1PqlfoGHPuj7XDlbv7tM0Sczq",
+      "name": "shimul",
+      "id": 4
     }
   ],
   "conversations": [
