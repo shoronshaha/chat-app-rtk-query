@@ -23,6 +23,12 @@
       "password": "$2a$10$p8nKzxM3nwHSw0na98pAGOAbWyDv1PqlfoGHPuj7XDlbv7tM0Sczq",
       "name": "shimul",
       "id": 4
+    },
+    {
+      "email": "apurbo@gmail.com",
+      "password": "$2a$10$QXLn9CjW/0oXg6NDyK6cXuse.To7L7ojLROu/KZdKaJokrHI4dJhu",
+      "name": "apurbo",
+      "id": 5
     }
   ],
   "conversations": [
