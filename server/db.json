@@ -65,6 +65,12 @@
       "password": "$2a$10$f17jU1nvMCB7xvabvnCs3OumL9GF1SgWgNTBuamlXt9GQd18Luvk2",
       "name": "apurbo",
       "id": 11
+    },
+    {
+      "email": "ikbal@gmail.com",
+      "password": "$2a$10$PdQKd5XKTO6B3mp4exwrD.9hUHjeJXHSHyJcSbsMQErJI3yvaZzSy",
+      "name": "ikbal",
+      "id": 12
     }
   ],
   "conversations": [
