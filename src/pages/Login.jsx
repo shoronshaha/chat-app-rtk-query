@@ -21,6 +21,7 @@ export default function Login() {
       navigate("/inbox");
     }
   }, [data, responseError, navigate]);
+
   const handleLogin = (e) => {
     e.preventDefault();
 

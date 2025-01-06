@@ -59,6 +59,12 @@
       "password": "$2a$10$pnJAHPQV.k464lzJyGrkEOFgNB6L7xFHxtWJSf0CNgtSxFyQhWCOe",
       "name": "tapu",
       "id": 10
+    },
+    {
+      "email": "apurbo432@gmail.com",
+      "password": "$2a$10$f17jU1nvMCB7xvabvnCs3OumL9GF1SgWgNTBuamlXt9GQd18Luvk2",
+      "name": "apurbo",
+      "id": 11
     }
   ],
   "conversations": [
