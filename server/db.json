@@ -71,6 +71,12 @@
       "password": "$2a$10$PdQKd5XKTO6B3mp4exwrD.9hUHjeJXHSHyJcSbsMQErJI3yvaZzSy",
       "name": "ikbal",
       "id": 12
+    },
+    {
+      "email": "rajes@gmail.com",
+      "password": "$2a$10$70Bk89JwMlka7QHuI/XGG..SxqgcoemzF3Cw44s4gSfvi8VH6A0s2",
+      "name": "rajes",
+      "id": 13
     }
   ],
   "conversations": [
@@ -109,6 +115,24 @@
       ],
       "message": "How are you?",
       "timestamp": 1661976143678
+    },
+    {
+      "id": 3,
+      "participants": "rajes@gmail.com-akash@learnwithsumit.com",
+      "users": [
+        {
+          "email": "rajes@gmail.com",
+          "name": "shoron shaha",
+          "id": 1
+        },
+        {
+          "email": "akash@learnwithsumit.com",
+          "name": "Akash Ahmed",
+          "id": 2
+        }
+      ],
+      "message": "How are you?",
+      "timestamp": 1661976143678
     }
   ],
   "messages": [
@@ -116,7 +140,7 @@
       "id": 1,
       "conversationId": 1,
       "sender": {
-        "email": "smaranshaha@gmail.com",
+        "email": "rajes@gmail.com",
         "name": "shoron shaha",
         "id": 1
       },

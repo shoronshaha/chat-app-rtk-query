@@ -1,28 +1,23 @@
-import ChatItem from "./ChatItems";
+import { Link } from "react-router-dom";
 
-export default function ChatItems() {
+export default function ChatItem({ avatar, name, lastMessage, lastTime }) {
   return (
-    <ul>
-      <li>
-        <ChatItem
-          avatar="https://cdn.pixabay.com/photo/2018/09/12/12/14/man-3672010__340.jpg"
-          name="Saad Hasan"
-          lastMessage="bye"
-          lastTime="25 minutes"
-        />
-        <ChatItem
-          avatar="https://cdn.pixabay.com/photo/2018/09/12/12/14/man-3672010__340.jpg"
-          name="Sumit Saha"
-          lastMessage="will talk to you later"
-          lastTime="10 minutes"
-        />
-        <ChatItem
-          avatar="https://cdn.pixabay.com/photo/2018/09/12/12/14/man-3672010__340.jpg"
-          name="Mehedi Hasan"
-          lastMessage="thanks for your support"
-          lastTime="15 minutes"
-        />
-      </li>
-    </ul>
+    <Link
+      className="flex items-center px-3 py-2 text-sm transition duration-150 ease-in-out border-b border-gray-300 cursor-pointer hover:bg-gray-100 focus:outline-none"
+      to="/"
+    >
+      <img
+        className="object-cover w-10 h-10 rounded-full"
+        src={avatar}
+        alt={name}
+      />
+      <div className="w-full pb-2 hidden md:block">
+        <div className="flex justify-between">
+          <span className="block ml-2 font-semibold text-gray-600">{name}</span>
+          <span className="block ml-2 text-sm text-gray-600">{lastTime}</span>
+        </div>
+        <span className="block ml-2 text-sm text-gray-600">{lastMessage}</span>
+      </div>
+    </Link>
   );
 }

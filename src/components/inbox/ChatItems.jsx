@@ -1,23 +1,50 @@
-import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useGetConversationsQuery } from "../../features/conversations/conversationsApi";
+import ChatItem from "./ChatItem";
+import Error from "../ui/Error";
+import moment from "moment";
 
-export default function ChatItem({ avatar, name, lastMessage, lastTime }) {
+export default function ChatItems() {
+  const { user } = useSelector((state) => state.auth);
+  const { email } = user || {};
+  const {
+    data: conversations,
+    isLoading,
+    isError,
+    error,
+  } = useGetConversationsQuery(email);
+
+  let content = null;
+
+  if (isLoading) {
+    content = <li className="m-2 text-center">Loading...</li>;
+  } else if (!isLoading && isError) {
+    content = (
+      <li className="m-2 text-center">
+        <Error message={error?.data}></Error>
+      </li>
+    );
+  } else if (!isLoading && !isError && conversations?.length === 0) {
+    content = <li className="m-2 text-center">No conversations found!</li>;
+  } else if (!isLoading && !isError && conversations?.length > 0) {
+    content = conversations.map((conversation) => {
+      const { id, message, timestamp } = conversation;
+      return (
+        <li key={id}>
+          <ChatItem
+            avatar="https://i.ibb.co.com/GMs0T5n/profile.jpg"
+            name="smaran"
+            lastMessage={message}
+            lastTime={moment(timestamp).fromNow()}
+          ></ChatItem>
+        </li>
+      );
+    });
+  }
+
   return (
-    <Link
-      className="flex items-center px-3 py-2 text-sm transition duration-150 ease-in-out border-b border-gray-300 cursor-pointer hover:bg-gray-100 focus:outline-none"
-      to="/"
-    >
-      <img
-        className="object-cover w-10 h-10 rounded-full"
-        src={avatar}
-        alt={name}
-      />
-      <div className="w-full pb-2 hidden md:block">
-        <div className="flex justify-between">
-          <span className="block ml-2 font-semibold text-gray-600">{name}</span>
-          <span className="block ml-2 text-sm text-gray-600">{lastTime}</span>
-        </div>
-        <span className="block ml-2 text-sm text-gray-600">{lastMessage}</span>
-      </div>
-    </Link>
+    <ul>
+      <li>{content}</li>
+    </ul>
   );
 }
