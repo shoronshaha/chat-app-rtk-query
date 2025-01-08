@@ -3,6 +3,9 @@ import { useGetConversationsQuery } from "../../features/conversations/conversat
 import ChatItem from "./ChatItem";
 import Error from "../ui/Error";
 import moment from "moment";
+import getPartnerInfo from "../../utils/getPartnerInfo";
+import gravatarUrl from "gravatar-url";
+import { Link } from "react-router-dom";
 
 export default function ChatItems() {
   const { user } = useSelector((state) => state.auth);
@@ -29,14 +32,20 @@ export default function ChatItems() {
   } else if (!isLoading && !isError && conversations?.length > 0) {
     content = conversations.map((conversation) => {
       const { id, message, timestamp } = conversation;
+      const { name, email: partnerEmail } = getPartnerInfo(
+        conversation.users,
+        email
+      );
       return (
         <li key={id}>
-          <ChatItem
-            avatar="https://i.ibb.co.com/GMs0T5n/profile.jpg"
-            name="smaran"
-            lastMessage={message}
-            lastTime={moment(timestamp).fromNow()}
-          ></ChatItem>
+          <Link to={`/inbox/${id}`}>
+            <ChatItem
+              avatar={gravatarUrl(partnerEmail, { size: 80 })}
+              name={name}
+              lastMessage={message}
+              lastTime={moment(timestamp).fromNow()}
+            ></ChatItem>
+          </Link>
         </li>
       );
     });
