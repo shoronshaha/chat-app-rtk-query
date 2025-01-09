@@ -3,7 +3,11 @@ import isValidEmail from "../../utils/isValidEmail";
 import { useGetUserQuery } from "../../features/users/usersApi";
 import Error from "../ui/Error";
 import { useDispatch, useSelector } from "react-redux";
-import { conversationsApi } from "../../features/conversations/conversationsApi";
+import {
+  conversationsApi,
+  useAddConversationMutation,
+  useEditConversationMutation,
+} from "../../features/conversations/conversationsApi";
 
 export default function Modal({ open, control }) {
   const [to, setTo] = useState("");
@@ -18,6 +22,11 @@ export default function Modal({ open, control }) {
   const { data: participant, isLoading } = useGetUserQuery(to, {
     skip: !userCheck,
   });
+
+  const [addConversation, { isSuccess: isAddCoversationSuccess }] =
+    useAddConversationMutation();
+  const [editConversation, { isSuccess: isEditCoversationSuccess }] =
+    useEditConversationMutation();
 
   useEffect(() => {
     if (participant?.length > 0 && participant[0].email !== myEmail) {
@@ -37,6 +46,12 @@ export default function Modal({ open, control }) {
         });
     }
   }, [participant, dispatch, myEmail, to]);
+
+  useEffect(() => {
+    if (isAddCoversationSuccess || isEditCoversationSuccess) {
+      control();
+    }
+  }, [isAddCoversationSuccess, isEditCoversationSuccess]);
 
   const debounceHandler = (fn, delay) => {
     let timeoutId;
@@ -59,7 +74,26 @@ export default function Modal({ open, control }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("form submited");
+    if (conversation?.length > 0) {
+      //edit conversation
+      editConversation({
+        id: conversation[0].id,
+        data: {
+          participants: `${myEmail}-${participant[0].email}`,
+          users: [loggedInUser, participant[0]],
+          message,
+          timestamp: new Date().getTime(),
+        },
+      });
+    } else if (conversation?.length === 0) {
+      //add conversation
+      addConversation({
+        participants: `${myEmail}-${participant[0].email}`,
+        users: [loggedInUser, participant[0]],
+        message,
+        timestamp: new Date().getTime(),
+      });
+    }
   };
   return (
     open && (
