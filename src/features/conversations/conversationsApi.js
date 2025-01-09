@@ -1,5 +1,5 @@
 import { apiSlice } from "../api/apiSlice";
-
+import { messagesApi } from "../messages/messagesApi";
 export const conversationsApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getConversations: builder.query({
@@ -10,22 +10,59 @@ export const conversationsApi = apiSlice.injectEndpoints({
     }),
     getConversation: builder.query({
       query: ({ userEmail, participantEmail }) =>
-        `/conversations?participants_like=${userEmail}-${participantEmail}&&participants_like=
-         ${participantEmail}-{userEmail}`,
+        `/conversations?participants_like=${userEmail}-${participantEmail}&&participants_like=${participantEmail}-${userEmail}`,
     }),
     addConversation: builder.mutation({
-      query: (data) => ({
+      query: ({ sender, data }) => ({
         url: "/conversations",
         method: "POST",
         body: data,
       }),
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        const conversation = await queryFulfilled;
+        if (conversation?.data?.id) {
+          // silent entry to message table
+          const users = arg.data.users;
+          const senderUser = users.find((user) => user.email === arg.sender);
+          const receiverUser = users.find((user) => user.email !== arg.sender);
+
+          dispatch(
+            messagesApi.endpoints.addMessage.initiate({
+              conversationId: conversation?.data?.id,
+              sender: senderUser,
+              receiver: receiverUser,
+              message: arg.data.message,
+              timestamp: arg.data.timestamp,
+            })
+          );
+        }
+      },
     }),
     editConversation: builder.mutation({
-      query: ({ data, id }) => ({
+      query: ({ id, data, sender }) => ({
         url: `/conversations/${id}`,
         method: "PATCH",
         body: data,
       }),
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        const conversation = await queryFulfilled;
+        if (conversation?.data?.id) {
+          // silent entry to message table
+          const users = arg.data.users;
+          const senderUser = users.find((user) => user.email === arg.sender);
+          const receiverUser = users.find((user) => user.email !== arg.sender);
+
+          dispatch(
+            messagesApi.endpoints.addMessage.initiate({
+              conversationId: conversation?.data?.id,
+              sender: senderUser,
+              receiver: receiverUser,
+              message: arg.data.message,
+              timestamp: arg.data.timestamp,
+            })
+          );
+        }
+      },
     }),
   }),
 });
