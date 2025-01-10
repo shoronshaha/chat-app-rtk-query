@@ -49,12 +49,13 @@
         },
         {
           "email": "smaranshaha@gmail.com",
+          "password": "$2a$10$OG6kqqEKnYhAsmvF9n5WrOCs9dvkXp/uSyuxFCev.lMuAbUYxXLuK",
           "name": "smaran",
           "id": 1
         }
       ],
-      "message": "sdafsdfsdfer3werwefcervgqwv",
-      "timestamp": 1736433268043,
+      "message": "eee",
+      "timestamp": 1736494926018,
       "id": 2
     },
     {
@@ -1033,6 +1034,40 @@
       "message": "sdafsdfsdfer3werwefcervgqwv",
       "timestamp": 1736433268043,
       "id": 59
+    },
+    {
+      "conversationId": 2,
+      "sender": {
+        "email": "smaranshaha@gmail.com",
+        "name": "smaran",
+        "id": 1
+      },
+      "receiver": {
+        "email": "rajes@gmail.com",
+        "password": "$2a$10$seWdEYMubxB4VXrPk.4rh.U6UwX9pfn839ebvqdjifLBsnGFUBcFW",
+        "name": "rajes",
+        "id": 3
+      },
+      "message": "test",
+      "timestamp": 1736494828109,
+      "id": 60
+    },
+    {
+      "conversationId": 2,
+      "sender": {
+        "email": "rajes@gmail.com",
+        "name": "rajes",
+        "id": 3
+      },
+      "receiver": {
+        "email": "smaranshaha@gmail.com",
+        "password": "$2a$10$OG6kqqEKnYhAsmvF9n5WrOCs9dvkXp/uSyuxFCev.lMuAbUYxXLuK",
+        "name": "smaran",
+        "id": 1
+      },
+      "message": "eee",
+      "timestamp": 1736494926018,
+      "id": 61
     }
   ]
 }
