@@ -1,5 +1,7 @@
+import io from "socket.io-client";
 import { apiSlice } from "../api/apiSlice";
 import { messagesApi } from "../messages/messagesApi";
+
 export const conversationsApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getConversations: builder.query({
@@ -7,6 +9,13 @@ export const conversationsApi = apiSlice.injectEndpoints({
         `/conversations?participants_like=${email}&_sort=timestamp&_order=desc&_page=1&_limit=${
           import.meta.env.VITE_APP_CONVERSATIONS_PER_PAGE
         }`,
+      transformResponse(apiResponse, meta) {
+        const totalCount = meta.response.headers.get("X-Total-Count");
+        return {
+          data: apiResponse,
+          totalCount,
+        };
+      },
       async onCacheEntryAdded(
         arg,
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
@@ -21,15 +30,18 @@ export const conversationsApi = apiSlice.injectEndpoints({
           upgrade: false,
           rejectUnauthorized: false,
         });
+
         try {
           await cacheDataLoaded;
           socket.on("conversation", (data) => {
             updateCachedData((draft) => {
-              const conversation = draft.find((c) => c.id == data?.data?.id);
+              const conversation = draft.data.find(
+                (c) => c.id == data?.data?.id
+              );
 
               if (conversation?.id) {
                 conversation.message = data?.data?.message;
-                conversation.message = data?.data?.timestamp;
+                conversation.timestamp = data?.data?.timestamp;
               } else {
                 // do nothing
               }
@@ -39,6 +51,33 @@ export const conversationsApi = apiSlice.injectEndpoints({
 
         await cacheEntryRemoved;
         socket.close();
+      },
+    }),
+    getMoreConversations: builder.query({
+      query: ({ email, page }) =>
+        `/conversations?participants_like=${email}&_sort=timestamp&_order=desc&_page=${page}&_limit=${
+          import.meta.env.VITE_APP_CONVERSATIONS_PER_PAGE
+        }`,
+      async onQueryStarted({ email }, { queryFulfilled, dispatch }) {
+        try {
+          const conversations = await queryFulfilled;
+          if (conversations?.data?.length > 0) {
+            // update conversation cache pessimistically start
+            dispatch(
+              apiSlice.util.updateQueryData(
+                "getConversations",
+                email,
+                (draft) => {
+                  return {
+                    data: [...draft.data, ...conversations.data],
+                    totalCount: Number(draft.totalCount),
+                  };
+                }
+              )
+            );
+            // update messages cache pessimistically end
+          }
+        } catch (err) {}
       },
     }),
     getConversation: builder.query({
@@ -84,7 +123,7 @@ export const conversationsApi = apiSlice.injectEndpoints({
             "getConversations",
             arg.sender,
             (draft) => {
-              const draftConversation = draft.find((c) => c.id == arg.id);
+              const draftConversation = draft.data.find((c) => c.id == arg.id);
               draftConversation.message = arg.data.message;
               draftConversation.timestamp = arg.data.timestamp;
             }
