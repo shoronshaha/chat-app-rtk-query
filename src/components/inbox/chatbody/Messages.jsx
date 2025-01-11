@@ -12,7 +12,6 @@ export default function Messages({ messages = [] }) {
     return acc;
   }, []);
 
-  console.log("Apu Dta :>> ", messages);
   return (
     <>
       <div className="relative w-full h-[calc(100vh_-_197px)] p-6 overflow-y-auto flex flex-col-reverse">

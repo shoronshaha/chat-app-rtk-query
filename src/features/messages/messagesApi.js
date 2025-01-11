@@ -21,7 +21,6 @@ export const messagesApi = apiSlice.injectEndpoints({
           await cacheDataLoaded;
 
           socket.on("message", (data) => {
-            console.log("message api", data);
             updateCachedData((draft) => {
               const exists = draft.some(
                 (message) => message.id === data?.data?.id
