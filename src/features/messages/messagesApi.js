@@ -21,14 +21,15 @@ export const messagesApi = apiSlice.injectEndpoints({
           await cacheDataLoaded;
 
           socket.on("message", (data) => {
+            console.log("message api", data);
             updateCachedData((draft) => {
-              // Check if the message already exists in the cache
               const exists = draft.some(
                 (message) => message.id === data?.data?.id
               );
 
+              // Add the new message only if it doesn't exist
               if (!exists && data?.data?.conversationId == arg) {
-                draft.unshift(data.data); // Add new message only if it doesn't exist
+                draft.unshift(data.data);
               }
             });
           });
