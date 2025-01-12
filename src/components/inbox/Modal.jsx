@@ -17,7 +17,7 @@ export default function Modal({ open, control }) {
   const { email: myEmail } = loggedInUser || {};
   const dispatch = useDispatch();
   const [responseError, setResponseError] = useState("");
-  const [conversation, setConversation] = useState("undefined");
+  const [conversation, setConversation] = useState(undefined);
 
   const { data: participant, isLoading } = useGetUserQuery(to, {
     skip: !userCheck,
