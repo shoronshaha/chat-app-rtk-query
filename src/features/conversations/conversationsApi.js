@@ -91,25 +91,94 @@ export const conversationsApi = apiSlice.injectEndpoints({
         body: data,
       }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
-        const conversation = await queryFulfilled;
-        if (conversation?.data?.id) {
-          // silent entry to message table
-          const users = arg.data.users;
-          const senderUser = users.find((user) => user.email === arg.sender);
-          const receiverUser = users.find((user) => user.email !== arg.sender);
+        // Generate a temporary ID for optimistic entry
+        const temporaryId = Date.now();
 
-          dispatch(
-            messagesApi.endpoints.addMessage.initiate({
-              conversationId: conversation?.data?.id,
-              sender: senderUser,
-              receiver: receiverUser,
-              message: arg.data.message,
-              timestamp: arg.data.timestamp,
-            })
-          );
+        // Optimistic cache update start
+        const pathResult = dispatch(
+          apiSlice.util.updateQueryData(
+            "getConversations",
+            arg.sender,
+            (draft) => {
+              // Check if the conversation already exists in the cache
+              const exists = draft.data.some(
+                (c) =>
+                  c.users.some(
+                    (user) => user.email === arg.data.users[0].email
+                  ) &&
+                  c.users.some((user) => user.email === arg.data.users[1].email)
+              );
+
+              if (!exists) {
+                // Add the new conversation optimistically
+                draft.data.unshift({
+                  id: temporaryId, // Temporary ID
+                  users: arg.data.users,
+                  message: arg.data.message,
+                  timestamp: arg.data.timestamp,
+                });
+                draft.totalCount += 1;
+              }
+            }
+          )
+        );
+        // Optimistic cache update end
+
+        try {
+          const conversation = await queryFulfilled;
+
+          if (conversation?.data?.id) {
+            // Update conversations cache with the actual conversation
+            dispatch(
+              apiSlice.util.updateQueryData(
+                "getConversations",
+                arg.sender,
+                (draft) => {
+                  // Remove the optimistic entry with the temporary ID
+                  draft.data = draft.data.filter((c) => c.id !== temporaryId);
+
+                  // Add the actual conversation data
+                  draft.data.unshift(conversation.data);
+                }
+              )
+            );
+
+            // Silent entry to message table (add message entry)
+            const users = arg.data.users;
+            const senderUser = users.find((user) => user.email === arg.sender);
+            const receiverUser = users.find(
+              (user) => user.email !== arg.sender
+            );
+
+            const res = await dispatch(
+              messagesApi.endpoints.addMessage.initiate({
+                conversationId: conversation?.data?.id,
+                sender: senderUser,
+                receiver: receiverUser,
+                message: arg.data.message,
+                timestamp: arg.data.timestamp,
+              })
+            ).unwrap();
+
+            // Update messages cache pessimistically
+            dispatch(
+              apiSlice.util.updateQueryData(
+                "getMessages",
+                res.conversationId.toString(),
+                (draft) => {
+                  draft.push(res);
+                }
+              )
+            );
+          }
+        } catch (err) {
+          // Rollback optimistic cache update if request fails
+          pathResult.undo();
+          console.error("Error while adding conversation:", err);
         }
       },
     }),
+
     editConversation: builder.mutation({
       query: ({ id, data, sender }) => ({
         url: `/conversations/${id}`,
