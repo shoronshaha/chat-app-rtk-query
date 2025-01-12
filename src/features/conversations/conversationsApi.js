@@ -195,6 +195,10 @@ export const conversationsApi = apiSlice.injectEndpoints({
               const draftConversation = draft.data.find((c) => c.id == arg.id);
               draftConversation.message = arg.data.message;
               draftConversation.timestamp = arg.data.timestamp;
+
+              // Move this conversation to the top of the list (after editing)
+              draft.data = draft.data.filter((c) => c.id !== arg.id);
+              draft.data.unshift(draftConversation); // Place it at the top
             }
           )
         );
