@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRegisterMutation } from "../features/auth/authApi";
 import Error from "../components/ui/Error";
+import logo from "../assets/images.jpg";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -15,7 +16,6 @@ export default function Register() {
     useRegisterMutation();
 
   useEffect(() => {
-    console.log(data);
     if (responseError?.data) {
       setError(responseError.data);
     }
@@ -43,11 +43,7 @@ export default function Register() {
         <div className="max-w-md w-full space-y-8">
           <div>
             <Link to="/">
-              <img
-                className="mx-auto h-12 w-auto"
-                // src={logoImage}
-                alt="shoron"
-              />
+              <img className="mx-auto h-12 w-auto" src={logo} alt="shoron" />
             </Link>
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
               Create your account
@@ -149,7 +145,7 @@ export default function Register() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
               >
                 <span className="absolute left-0 inset-y-0 flex items-center pl-3"></span>
                 Sign up

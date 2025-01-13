@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Error from "../components/ui/Error";
 import { useEffect, useState } from "react";
 import { useLoginMutation } from "../features/auth/authApi";
+import logo from "../assets/images.jpg";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -39,7 +40,7 @@ export default function Login() {
         <div className="max-w-md w-full space-y-8">
           <div>
             <Link to="/">
-              <img className="mx-auto h-12 w-auto" alt="shoron" />
+              <img className="mx-auto h-12 w-auto" src={logo} alt="shoron" />
             </Link>
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
               Sign in to your account
@@ -101,7 +102,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
               >
                 Sign in
               </button>

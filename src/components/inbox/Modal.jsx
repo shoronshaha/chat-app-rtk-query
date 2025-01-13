@@ -122,7 +122,7 @@ export default function Modal({ open, control }) {
                   type="email"
                   required
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-violet-500 focus:border-violet-500 focus:z-10 sm:text-sm"
-                  placeholder="Send to"
+                  placeholder="Send to validate gmail"
                   onChange={(e) => handleSearch(e.target.value)}
                   disabled={isLoading}
                 />
@@ -147,7 +147,7 @@ export default function Modal({ open, control }) {
             <div>
               <button
                 type="submit"
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
                 disabled={
                   conversation === undefined ||
                   (participant?.length > 0 && participant[0].email === myEmail)
