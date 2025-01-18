@@ -5,21 +5,22 @@ import { userLoggedIn } from "../features/auth/authSlice";
 export default function useAuthCheck() {
   const dispatch = useDispatch();
   const [authChecked, setAuthChecked] = useState(false);
+
   useEffect(() => {
-    const localAuth = localStorage?.getItem("auth");
-    if (localAuth) {
-      const auth = JSON.parse(localAuth);
-      if (auth?.accessToken && auth?.user) {
-        dispatch(
-          userLoggedIn({
-            accessToken: auth.accessToken,
-            user: auth.user,
-          })
-        );
+    try {
+      const localAuth = localStorage.getItem("auth");
+      if (localAuth) {
+        const auth = JSON.parse(localAuth);
+        if (auth?.accessToken && auth?.user) {
+          dispatch(userLoggedIn(auth));
+        }
       }
+    } catch (error) {
+      console.error("Failed to parse auth data:", error);
+    } finally {
+      setAuthChecked(true);
     }
-    setAuthChecked(true);
-  }, [dispatch, setAuthChecked]);
+  }, [dispatch]);
 
   return authChecked;
 }

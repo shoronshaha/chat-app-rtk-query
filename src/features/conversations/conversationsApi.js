@@ -21,7 +21,7 @@ export const conversationsApi = apiSlice.injectEndpoints({
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) {
         // create socket
-        const socket = io("http://localhost:9000", {
+        const socket = io(`${import.meta.env.VITE_APP_API_URL}`, {
           reconnectionDelay: 1000,
           reconnection: true,
           reconnectionAttempts: 10,
@@ -34,16 +34,28 @@ export const conversationsApi = apiSlice.injectEndpoints({
         try {
           await cacheDataLoaded;
           socket.on("conversation", (data) => {
+            console.log(data);
+
+            // Update only if the logged-in user is part of the conversation
             updateCachedData((draft) => {
-              const conversation = draft.data.find(
-                (c) => c.id == data?.data?.id
+              const isParticipant = data?.data?.users?.some(
+                (user) => user.email === arg
               );
 
-              if (conversation?.id) {
-                conversation.message = data?.data?.message;
-                conversation.timestamp = data?.data?.timestamp;
-              } else {
-                // do nothing
+              if (isParticipant) {
+                const conversation = draft.data.find(
+                  (c) => c.id == data?.data?.id
+                );
+
+                if (conversation?.id) {
+                  // Update existing conversation
+                  conversation.message = data?.data?.message;
+                  conversation.timestamp = data?.data?.timestamp;
+                } else {
+                  // Add the new conversation for the specific user
+                  draft.data.unshift(data?.data);
+                  draft.totalCount += 1; // Increase totalCount instead of decreasing
+                }
               }
             });
           });
